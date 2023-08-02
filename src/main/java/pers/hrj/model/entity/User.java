@@ -1,10 +1,7 @@
 package pers.hrj.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -23,6 +20,6 @@ public class User {
     private String addr;
     private Date birthday;
     private String sex;
-    private LocalDateTime create_time;
-    private LocalDateTime update_time;
+    private LocalDateTime createTime;
+    private LocalDateTime updateTime;
 }
