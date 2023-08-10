@@ -20,7 +20,9 @@ public class RabbitMQController {
     @GetMapping("/get")
     public SimpleRestVo get(){
         User user = userService.getBaseMapper().selectById(1686311752046559233L);
-        rabbitTemplate.convertAndSend("Exchange","test",user);
+//        rabbitTemplate.convertAndSend("Exchange","test",user);
+
+
         return SimpleRestVo.successVo();
     }
 }
