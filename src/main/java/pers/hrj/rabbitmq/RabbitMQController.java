@@ -27,7 +27,7 @@ public class RabbitMQController {
 //        rabbitTemplate.convertAndSend("Exchange","test",user);
 //
         MessageProperties messageProperties = new MessageProperties();
-        messageProperties.setExpiration("10000");
+//        messageProperties.setExpiration("10000");
 //        messageProperties.setContentType("application/json");
         Message message = new Message(JSON.toJSONString(user).getBytes(),messageProperties );
         rabbitTemplate.convertAndSend("Exchange","test",message);
