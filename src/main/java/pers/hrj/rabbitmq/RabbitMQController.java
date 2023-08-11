@@ -23,13 +23,13 @@ public class RabbitMQController {
     @GetMapping("/get")
     public SimpleRestVo get(){
         User user = userService.getBaseMapper().selectById(1686311752046559233L);
+        //直接发送实体类需要序列化
 //        rabbitTemplate.convertAndSend("Exchange","test",user);
 //
         MessageProperties messageProperties = new MessageProperties();
         messageProperties.setExpiration("10000");
 //        messageProperties.setContentType("application/json");
-//        messageProperties.setM
-        Message message = new Message(JSON.toJSONString(user).getBytes(), messageProperties );
+        Message message = new Message(JSON.toJSONString(user).getBytes(),messageProperties );
         rabbitTemplate.convertAndSend("Exchange","test",message);
         return SimpleRestVo.successVo();
     }

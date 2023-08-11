@@ -31,6 +31,7 @@ public class RabbitMQConfig {
         return BindingBuilder.bind(DirectQueue()).to(DirectExchange()).with("test");
     }
 
+
     @Bean
     public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);

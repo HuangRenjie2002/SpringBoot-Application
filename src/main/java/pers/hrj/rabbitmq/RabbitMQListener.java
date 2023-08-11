@@ -1,20 +1,19 @@
 package pers.hrj.rabbitmq;
 
+import com.alibaba.fastjson2.JSONObject;
 import org.springframework.amqp.core.Message;
-import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
-
-import java.nio.charset.StandardCharsets;
+import pers.hrj.model.entity.User;
 
 @Component
-@RabbitListener(queues = "Queue")
+
 public class RabbitMQListener {
 
-    @RabbitHandler
-    public void handler( Object message){
-        Message message1 = (Message)message;
-        System.out.println(new String(message1.getBody(), StandardCharsets.UTF_8));
+    @RabbitListener(queues = "Queue")
+    public void handler(Message message) {
+        System.out.println(JSONObject.parseObject(new String(message.getBody()), User.class));
+        System.out.println(message);
     }
 
 }
