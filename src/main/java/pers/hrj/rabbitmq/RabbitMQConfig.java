@@ -7,14 +7,21 @@ import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Configuration
 public class RabbitMQConfig {
     @Bean
     public Queue DirectQueue() {
-//        Map<String, Object> map = new HashMap<>();
-//        // 队列中的消息未被消费则10秒后过期
-//        map.put("x-delayed-type", "direct");
-        return new Queue("Queue", true, false, false);
+        Map<String, Object> args = new HashMap<>();
+        //设置消息有效期，消息到期未被消费，就胡进入到死信交换机，并由死信交换机路由到死信队列
+//        args.put("x-message-ttl", 10000);
+        //指定死信交换机
+        args.put("x-dead-letter-exchange", "dlx.exchange");
+        //指定死信队列
+        args.put("x-dead-letter-routing-key", "dlx.queue");
+        return new Queue("Queue", true, false, false,args);
     }
 
     @Bean
@@ -27,6 +34,38 @@ public class RabbitMQConfig {
     Binding bindingDirect() {
         return BindingBuilder.bind(DirectQueue()).to(DirectExchange()).with("test");
     }
+
+    /**
+     * 死信队列与死信交换机的连接
+     * @return
+     */
+    @Bean
+    Binding dlxBinding() {
+        return BindingBuilder
+                .bind(dlxQueue())
+                .to(dlxDirectExchange())
+                .with("dlx");
+    }
+
+    /**
+     * 死信队列
+     * @return
+     */
+    @Bean
+    Queue dlxQueue() {
+        return new Queue("dlx.queue", true, false, false);
+    }
+
+    /**
+     * 死信交换机
+     * @return
+     */
+    @Bean
+    DirectExchange dlxDirectExchange() {
+        return new DirectExchange("dlx.exchange", true, false);
+    }
+
+
 
 
 //    @Bean

@@ -3,6 +3,7 @@ package pers.hrj.rabbitmq;
 import com.alibaba.fastjson2.JSONObject;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.MessageProperties;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
@@ -19,12 +20,13 @@ public class RabbitMQListener {
     public void handler(Channel channel, Message message) throws IOException {
         System.out.println(JSONObject.parseObject(new String(message.getBody()), User.class));
         System.out.println(message);
+        Map<String, Object> headers = message.getMessageProperties().getHeaders();
         try {
             int a = 1/0;
+            channel.basicAck(message.getMessageProperties().getDeliveryTag(),false);
         } catch (Exception e) {
             e.printStackTrace();
             Integer retryCount;
-            Map<String, Object> headers = message.getMessageProperties().getHeaders();
             if (!headers.containsKey("retry-count")) {
                 retryCount = 0;
             } else {
@@ -35,8 +37,14 @@ public class RabbitMQListener {
                 //重新发送到MQ中
                 System.err.println(retryCount);
                 AMQP.BasicProperties basicProperties = new AMQP.BasicProperties().builder().contentType("text/plain").headers(headers).build();
+                channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
                 channel.basicPublish(message.getMessageProperties().getReceivedExchange(),
                         message.getMessageProperties().getReceivedRoutingKey(), basicProperties,
+                        message.getBody());
+            }else {
+
+                channel.basicPublish("dlx.exchange",
+                        "dlx", MessageProperties.PERSISTENT_TEXT_PLAIN,
                         message.getBody());
             }
         }
