@@ -2,7 +2,6 @@ package pers.hrj.rabbitmq;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.MessageProperties;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
@@ -22,9 +21,9 @@ public class RabbitMQListener {
             channel.basicAck(message.getMessageProperties().getDeliveryTag(),false);
         } catch (IOException e) {
            e.printStackTrace();
-            channel.basicPublish(message.getMessageProperties().getReceivedExchange(),
-                    message.getMessageProperties().getReceivedRoutingKey(), MessageProperties.PERSISTENT_TEXT_PLAIN,
-                    message.getBody());
+//            channel.basicPublish(message.getMessageProperties().getReceivedExchange(),
+//                    message.getMessageProperties().getReceivedRoutingKey(), MessageProperties.PERSISTENT_TEXT_PLAIN,
+//                    message.getBody());
 
         }
     }
