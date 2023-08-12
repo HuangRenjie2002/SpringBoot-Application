@@ -46,6 +46,8 @@ public class RabbitMQListener {
                 channel.basicPublish("dlx.exchange",
                         "dlx", MessageProperties.PERSISTENT_TEXT_PLAIN,
                         message.getBody());
+                channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+
             }
         }
     }
